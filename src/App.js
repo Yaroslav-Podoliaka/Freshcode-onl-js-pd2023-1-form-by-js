@@ -1,25 +1,114 @@
-import logo from './logo.svg';
+import React, { Component } from 'react'
 import './App.css';
+import ContactForm from './components/ContactForm/ContactForm';
+import ContactList from './components/ContactList/ContactList';
 
-function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+export class App extends Component {
+  state = {
+    contacts: [],
+    contactForEdit: this.createEmptyContact(),
+  };
+  createEmptyContact() {
+    return {
+      id: "",
+      firstName: "",
+      lastName: "",
+      email: "",
+      phone: "",
+    };
+  }
+  changeForm = (changes) => {
+    this.setState({
+      contactForEdit: {
+        ...this.state.contactForEdit,
+        ...changes
+      }
+    })
+  }
+  saveState(contacts) {
+    localStorage.setItem("contacts", JSON.stringify(contacts));
+  }
+  restoreState() {
+    const data = localStorage.getItem("contacts");
+    return data ? JSON.parse(data) : [];
+  }
+  componentDidMount() {
+    this.setState({
+      contacts: this.restoreState(),
+    });
+  }
+  selectContact = (contact) => {
+    this.setState({
+      contactForEdit: contact,
+    });
+  };
+  createContact(contact) {
+    contact.id = Date.now();
+    this.setState((state) => {
+      const contacts = [...state.contacts, contact];
+      this.saveState(contacts);
+      return {
+        contacts,
+        contactForEdit: this.createEmptyContact(),
+      };
+    });
+  }
+  updateContact(contact) {
+    this.setState((state) => {
+      const contacts = state.contacts.map((item) =>
+        item.id === contact.id ? contact : item
+      );
+      this.saveState(contacts);
+      return {
+        contacts,
+        contactForEdit: contact,
+      };
+    });
+  }
+  saveContact = (contact) => {
+    if (!contact.id) {
+      this.createContact(contact);
+    } else {
+      this.updateContact(contact);
+    }
+  };
+  addNewContact = () => {
+    this.setState({
+      contactForEdit: this.createEmptyContact(),
+    });
+  };
+  deleteContact = (id) => {
+    this.setState((state) => {
+      const contacts = state.contacts.filter((contact) => contact.id !== id);
+      this.saveState(contacts);
+      return {
+        contacts,
+        contactForEdit: this.createEmptyContact(),
+      };
+    });
+  };
+  render() {
+    return (
+      <div className='container'>
+        <h1 className='header'>Contact List</h1>
+        <div className='main'>
+          <ContactList
+            contacts={this.state.contacts}
+            onDelete={this.deleteContact}
+            onAddContact={this.addNewContact}
+            onEditContact={this.selectContact}
+          />
+          <ContactForm
+            key={this.state.contactForEdit.id}
+            contactForEdit={this.state.contactForEdit}
+            onSubmit={this.saveContact}
+            onDelete={this.deleteContact}
+            onChange={this.changeForm}
+          />
+        </div>
+      </div>
+    );
+  }
 }
 
-export default App;
+export default App
