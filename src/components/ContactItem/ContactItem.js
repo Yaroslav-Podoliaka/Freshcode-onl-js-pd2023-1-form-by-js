@@ -2,14 +2,15 @@ import React, { Component } from 'react'
 import './ContactItem.css';
 
 export class ContactItem extends Component {
+  
   onItemDelete = (event) => {
-    event.stopPropagation();
     this.props.onDelete(this.props.contact.id)
   }
+
   onContactEdit = (event) => {
-    event.stopPropagation()
     this.props.onEdit(this.props.contact)
   }
+
   render() {
     return (
       <div className='contact-item'>

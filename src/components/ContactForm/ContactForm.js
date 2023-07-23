@@ -6,14 +6,6 @@ export class ContactForm extends Component {
     ...this.props.contactForEdit,
   };
 
-  // static getDerivedStateFromProps(props, state) {
-  //   if (state.id === props.contactForEdit.id) {
-  //     return {};
-  //   }
-  //   return {
-  //     ...props.contactForEdit,
-  //   }
-  // };
   createEmptyContact() {
     return {
       firstName: '',
@@ -21,25 +13,29 @@ export class ContactForm extends Component {
       email: '',
       phone: '',
     };
-  }
+  };
+
   onInputChange = (event) => {
-    const {name, value} = event.target;
+    const { name, value } = event.target;
     this.setState({
       [name]: value
     });
-  }
+  };
+
   onClearField = (event) => {
     const sibling = event.target.parentNode.firstChild;
     this.setState({
       [sibling.name]: '',
     });
-  }
+  };
+
   onFormSubmit = (event) => {
     event.preventDefault();
     this.props.onSubmit({
       ...this.state,
     });
-  };
+  };;
+  
   onContactDelete = () => {
     this.props.onDelete(this.props.contactForEdit.id);
     this.setState({

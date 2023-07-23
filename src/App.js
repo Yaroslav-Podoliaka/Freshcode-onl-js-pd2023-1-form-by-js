@@ -8,6 +8,7 @@ export class App extends Component {
     contacts: [],
     contactForEdit: this.createEmptyContact(),
   };
+
   createEmptyContact() {
     return {
       id: "",
@@ -16,32 +17,29 @@ export class App extends Component {
       email: "",
       phone: "",
     };
-  }
-  changeForm = (changes) => {
-    this.setState({
-      contactForEdit: {
-        ...this.state.contactForEdit,
-        ...changes
-      }
-    })
-  }
+  };
+  
   saveState(contacts) {
     localStorage.setItem("contacts", JSON.stringify(contacts));
-  }
+  };
+
   restoreState() {
     const data = localStorage.getItem("contacts");
     return data ? JSON.parse(data) : [];
-  }
+  };
+
   componentDidMount() {
     this.setState({
       contacts: this.restoreState(),
     });
-  }
+  };
+
   selectContact = (contact) => {
     this.setState({
       contactForEdit: contact,
     });
   };
+
   createContact(contact) {
     contact.id = Date.now();
     this.setState((state) => {
@@ -52,7 +50,8 @@ export class App extends Component {
         contactForEdit: this.createEmptyContact(),
       };
     });
-  }
+  };
+
   updateContact(contact) {
     this.setState((state) => {
       const contacts = state.contacts.map((item) =>
@@ -64,7 +63,8 @@ export class App extends Component {
         contactForEdit: contact,
       };
     });
-  }
+  };
+
   saveContact = (contact) => {
     if (!contact.id) {
       this.createContact(contact);
@@ -72,11 +72,13 @@ export class App extends Component {
       this.updateContact(contact);
     }
   };
+
   addNewContact = () => {
     this.setState({
       contactForEdit: this.createEmptyContact(),
     });
   };
+
   deleteContact = (id) => {
     this.setState((state) => {
       const contacts = state.contacts.filter((contact) => contact.id !== id);
@@ -87,6 +89,7 @@ export class App extends Component {
       };
     });
   };
+  
   render() {
     return (
       <div className='container'>
